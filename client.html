@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Stream</title>
+</head>
+<body>
+    <button id="start-btn">Start Streaming</button>
+    <script>
+        var socket = new WebSocket("ws://localhost:5000");
+
+        socket.onopen = function(e) {
+            alert("Connection established");
+        };
+
+        document.getElementById('start-btn').onclick = function() {
+            // Assuming your video stream source is '0'
+            socket.send('video-stream',{stream: '0'}); 
+        };
+
+        socket.onmessage = function(event) {
+            console.log(`[message] Data received from server: ${event.data}`);
+        };
+
+        socket.onclose = function(event) {
+            if (event.wasClean) {
+                alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+            } else {
+                alert('[close] Connection died');
+            }
+        };
+
+        socket.onerror = function(error) {
+            alert(`[error] ${error.message}`);
+        };
+    </script>
+</body>
+</html>
